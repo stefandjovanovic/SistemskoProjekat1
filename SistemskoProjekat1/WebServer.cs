@@ -10,10 +10,11 @@ namespace SistemskoProjekat1
     public class WebServer
     {
         private readonly HttpListener _listener = new HttpListener();
-        private readonly Func<HttpListenerRequest, string> _responderMethod;
+        private readonly Func<HttpListenerRequest, Cache.Cache, string> _responderMethod;
+        private Cache.Cache cache;
 
 
-        public WebServer(Func<HttpListenerRequest, string> responderMethod, params string[] prefixes)
+        public WebServer(Func<HttpListenerRequest, Cache.Cache, string> responderMethod, int CacheCap, params string[] prefixes)
         {
             if (prefixes == null || prefixes.Length == 0)
             {
@@ -29,6 +30,8 @@ namespace SistemskoProjekat1
             {
                 _listener.Prefixes.Add(prefix);
             }
+
+            cache = new Cache.Cache(CacheCap);
 
             _responderMethod = responderMethod;
 
@@ -70,7 +73,7 @@ namespace SistemskoProjekat1
 
                                 //Console.WriteLine(request.RawUrl);
 
-                                string rstr = _responderMethod(request);
+                                string rstr = _responderMethod(request, this.cache);
                                 byte[] buf = Encoding.UTF8.GetBytes(rstr);
                                 response.ContentLength64 = buf.Length;
                                 response.OutputStream.Write(buf, 0, buf.Length);
