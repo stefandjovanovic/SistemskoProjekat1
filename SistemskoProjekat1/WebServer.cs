@@ -46,15 +46,20 @@ namespace SistemskoProjekat1
                     {
                         ThreadPool.QueueUserWorkItem(c =>
                         {
-                            HttpListenerContext context = _listener.GetContext();
-                            HttpListenerRequest request = context.Request;
-                            HttpListenerResponse response = context.Response;
+                            //Console.WriteLine("pokrenuta nit");
+
+                            //HttpListenerContext context = _listener.GetContext();
+                            HttpListenerContext? context = c as HttpListenerContext;
+
                             try
                             {
                                 if (context == null)
                                 {
                                     return;
                                 }
+
+                                HttpListenerRequest request = context.Request;
+                                HttpListenerResponse response = context.Response;
                                 //Console.WriteLine($"Thread ID: {Thread.CurrentThread.ManagedThreadId}");
                                 //Thread.Sleep(5000);
 
@@ -62,6 +67,8 @@ namespace SistemskoProjekat1
                                 {
                                     return;
                                 }
+
+                                //Console.WriteLine(request.RawUrl);
 
                                 string rstr = _responderMethod(request);
                                 byte[] buf = Encoding.UTF8.GetBytes(rstr);
@@ -78,7 +85,7 @@ namespace SistemskoProjekat1
                             {
                                 if (context != null)
                                 {
-                                    response.OutputStream.Close();
+                                    context.Response.OutputStream.Close();
                                 }
                             }
                         }, _listener.GetContext());
