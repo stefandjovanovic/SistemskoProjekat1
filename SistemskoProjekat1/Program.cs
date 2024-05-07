@@ -7,7 +7,9 @@ namespace SistemskoProjekat1
     {
         private static void Main(string[] args)
         {
-            ConversionService conversionService = new ConversionService("C:\\Users\\najda\\OneDrive\\Documents\\Fax\\3. godina\\Sistemsko Prog\\konverzija");
+            string rootPath = "C:\\Documents_Fax\\6 semestar\\Sistemsko programiranje\\Projekti\\root";
+
+            ConversionService conversionService = new ConversionService(rootPath);
 
             WebServer ws = new WebServer(conversionService.GetRequest, 20, "http://localhost:5050/");
 
