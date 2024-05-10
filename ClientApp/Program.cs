@@ -4,7 +4,7 @@ using System.Threading;
 
 
 
-namespace SistemskoProjekat1
+namespace ClientApp
 {
     class Program
     {
@@ -12,20 +12,25 @@ namespace SistemskoProjekat1
         {
             // Lista fajlova
             List<string> fileNames = new List<string> { 
-                "Lorem.txt",
+                "lorem.txt",
                 "Lorem.bin",
                 "nijeFajl",
                 "nePostoji.txt",
-                "Lorem.txt",
-                "Lorem.bin",
+                "lorem.txt",
+                "lorem.bin",
                 "nePostoji.txt",
-                "nesto.txt" 
+                "proba.bin",
+                "proba.txt",
+                "proba1.txt",
+                "test.txt",
+                "nesto.txt" ,
+                "nekifajl.bin",
+                "proba.bin"
             };
 
             Thread[] threads = new Thread[fileNames.Count];
 
             int i = 0;
-            // Kreiranje i pokretanje niti za svaki grad
             foreach (string fileName in fileNames)
             {
 
@@ -34,7 +39,6 @@ namespace SistemskoProjekat1
                 i++;
             }
 
-            // Čekanje da se sve niti završe
 
             foreach(Thread thread in threads)
             {
@@ -45,14 +49,14 @@ namespace SistemskoProjekat1
 
         static void SendRequest(string fileName)
         {
-            string url = $"http://localhost:5050/{fileName}"; // Dodavanje imena grada u URL
+            string url = $"http://localhost:5050/{fileName}";
 
             using (HttpClient client = new HttpClient())
             {
                 try
                 {
                     HttpResponseMessage response = client.GetAsync(url).Result;
-                    response.EnsureSuccessStatusCode(); // Provera da li je odgovor uspešan
+                    response.EnsureSuccessStatusCode();
 
                     string responseBody = response.Content.ReadAsStringAsync().Result;
                     Console.WriteLine($"Odgovor servera za fajl {fileName}:");

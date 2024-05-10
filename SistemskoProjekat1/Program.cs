@@ -11,10 +11,13 @@ namespace SistemskoProjekat1
 
             ConversionService conversionService = new ConversionService(rootPath);
 
-            WebServer ws = new WebServer(conversionService.GetRequest, 20, "http://localhost:5050/");
+            WebServer ws = new WebServer(conversionService.GetRequest, 256, "http://localhost:5050/");
+
+            //primer sa ogranicenom velicinom kesa - gde se izbacuju elmenti
+            //WebServer ws = new WebServer(conversionService.GetRequest, 5, "http://localhost:5050/");
 
             ws.Run();
-            Console.WriteLine("A simple webserver. Press a key to quit.");
+            Console.WriteLine("Pritiskom bilo kog tastera prekinite rad");
             Console.ReadKey();
             ws.Stop();
         }

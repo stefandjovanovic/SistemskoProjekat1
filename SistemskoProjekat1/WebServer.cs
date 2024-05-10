@@ -9,8 +9,8 @@ namespace SistemskoProjekat1
 {
     public class WebServer
     {
-        private readonly HttpListener _listener = new HttpListener();
-        private readonly Func<HttpListenerRequest, Cache.Cache, string> _responderMethod;
+        private readonly HttpListener listener = new HttpListener();
+        private readonly Func<HttpListenerRequest, Cache.Cache, string> responderMethod;
         private Cache.Cache cache;
 
 
@@ -28,29 +28,27 @@ namespace SistemskoProjekat1
 
             foreach (string prefix in prefixes)
             {
-                _listener.Prefixes.Add(prefix);
+                listener.Prefixes.Add(prefix);
             }
 
             cache = new Cache.Cache(CacheCap);
 
-            _responderMethod = responderMethod;
+            this.responderMethod = responderMethod;
 
-            _listener.Start();
+            listener.Start();
         }
 
         public void Run()
         {
             ThreadPool.QueueUserWorkItem(o =>
             {
-                Console.WriteLine("Webserver running...");
+                Console.WriteLine("Webserver je pokrenut...");
                 try
                 {
-                    while (_listener.IsListening)
+                    while (listener.IsListening)
                     {
                         ThreadPool.QueueUserWorkItem(c =>
                         {
-                            //Console.WriteLine("pokrenuta nit");
-
                             //HttpListenerContext context = _listener.GetContext();
                             HttpListenerContext? context = c as HttpListenerContext;
 
@@ -63,17 +61,15 @@ namespace SistemskoProjekat1
 
                                 HttpListenerRequest request = context.Request;
                                 HttpListenerResponse response = context.Response;
-                                //Console.WriteLine($"Thread ID: {Thread.CurrentThread.ManagedThreadId}");
-                                //Thread.Sleep(5000);
+                                
 
                                 if (request.RawUrl == "/favicon.ico")
                                 {
                                     return;
                                 }
 
-                                //Console.WriteLine(request.RawUrl);
 
-                                string rstr = _responderMethod(request, this.cache);
+                                string rstr = responderMethod(request, this.cache);
                                 byte[] buf = Encoding.UTF8.GetBytes(rstr);
                                 response.ContentLength64 = buf.Length;
                                 response.OutputStream.Write(buf, 0, buf.Length);
@@ -91,7 +87,7 @@ namespace SistemskoProjekat1
                                     context.Response.OutputStream.Close();
                                 }
                             }
-                        }, _listener.GetContext());
+                        }, listener.GetContext());
                     }
                 }
                 catch (Exception ex)
@@ -103,8 +99,8 @@ namespace SistemskoProjekat1
 
         public void Stop()
         {
-            _listener.Stop();
-            _listener.Close();
+            listener.Stop();
+            listener.Close();
         }
 
 

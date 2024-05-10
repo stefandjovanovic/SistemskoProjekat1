@@ -10,6 +10,8 @@ namespace SistemskoProjekat1.Cache
     public class Cache
     {
 
+        //Implementacija kesa pomocu lancane liste po principu LRU
+
         private static readonly ReaderWriterLockSlim cacheLock = new ReaderWriterLockSlim();
 
 
@@ -33,26 +35,26 @@ namespace SistemskoProjekat1.Cache
             {
                 if (Entries.ContainsKey(key))
                 {
+                    //Ako postoji elment sa datim kljucem postavi ga na head
                     Node n = Entries[key];
                     n.Data = value;
 
                     Remove(ref n);
                     SetHead(ref n);
                 }
-                else //If Page Not found in Memory.
+                else //Ako ne postoji element kreiraj i dodaj na head
                 {
                     if (Length < Capacity)
                     {
                         Node n = new Node(key, value);
 
                         SetHead(ref n);
-                        //Attach node to start.
 
                         Length++;
 
                         Entries.Add(key, n);
                     }
-                    else //Page size full,remove least recently use i.e from tail of List
+                    else //Kes je pun izbrisi sa poslednji elemnt i dodaj novi
                     {
                         Entries.Remove(Tail!.Key);
                         Node p1 = Tail;
@@ -86,7 +88,7 @@ namespace SistemskoProjekat1.Cache
                 if (Entries.ContainsKey(key))
                 {
                     Node n = Entries[key];
-
+                    //Ako nije head smesti ga
                     if (!IsHead(n))
                     {
                         Remove(ref n);
@@ -98,6 +100,7 @@ namespace SistemskoProjekat1.Cache
                 }
                 else
                 {
+                    //Ako ne postoji vraca null
                     return null;
                 }
             }
